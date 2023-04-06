@@ -51,6 +51,18 @@ class UsersController {
 
         return response.json()
     }
+
+    async login (request, response) {
+        const { email, password } = request.body
+
+        const user = await knex('users').where({ email }).first()
+        
+        const passwordCheck = await compare(password, user.password)
+
+        if ( !passwordCheck ) throw new appError('The email and password do not match!')
+
+        return response.json(user)
+    }
 }
 
 module.exports = UsersController
