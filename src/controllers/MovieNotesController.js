@@ -4,11 +4,22 @@ const appError = require('../utils/appError')
 
 class MovieNotesController {
     async create (request, response) {
-        const { title, description, rating } = request.body
+        const { title, description, rating, tags } = request.body
         const { user_id } = request.params
 
         inputValidation (title, description, rating)
-        
+
+        const [ id ] = await knex('movie_notes').insert({ title, description, rating, user_id })
+
+        if ( tags ) {
+            const Tags = tags.split(',').map( tag => tag.toLowerCase().trim())
+            
+            for (let name of Tags) {
+                await knex('movie_tags').insert({name, user_id, note_id: id})
+            }
+        }
+
+        return response.status(201).json()
     }
 }
 
