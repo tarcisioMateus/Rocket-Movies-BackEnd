@@ -37,22 +37,7 @@ class MovieNotesController {
         let notes
 
         if ( tags ) {
-            const Tags = tags.split(',').map( tag => tag.toLowerCase().trim())
-
-            if ( title ) {
-                notes = await knex('movie_tags').select(['movie_notes.id', 'movie_notes.title', 'movie_notes.rating'])
-                .where('movie_notes.user_id', user_id)
-                .whereLike('movie_notes.title', `%${title}%`)
-                .whereIn('movie_tags.name', Tags)
-                .InnerJoin('movie_notes', 'movie_notes.id', 'movie_tags.note_id')
-                .orderBy('movie_notes.title')
-            } else {
-                notes = await knex('movie_tags').select(['movie_notes.id', 'movie_notes.title', 'movie_notes.rating'])
-                .where('movie_notes.user_id', user_id)
-                .whereIn('movie_tags.name', Tags)
-                .InnerJoin('movie_notes', 'movie_notes.id', 'movie_tags.note_id')
-                .orderBy('movie_notes.title')
-            }
+            notes = await indexSearchWithTags ( user_id, tags, title)
         } else {
             notes = await knex('movie_notes').where({ user_id }).whereLike('title', `%${title}%`)
         }
@@ -86,4 +71,25 @@ function inputValidation (title, description, rating) {
     if ( !description ) throw new appError('You must give the movie a description!')
     if ( !rating ) throw new appError('You must give the movie a rating!')
     if ( rating < 0 || rating > 5) throw new appError('the rating must be between 0 and 5!')
+}
+
+async function indexSearchWithTags ( user_id, tags, title) {
+    let notes
+    const Tags = tags.split(',').map( tag => tag.toLowerCase().trim())
+
+    if ( title ) {
+        notes = await knex('movie_tags').select(['movie_notes.id', 'movie_notes.title', 'movie_notes.rating'])
+        .where('movie_notes.user_id', user_id)
+        .whereLike('movie_notes.title', `%${title}%`)
+        .whereIn('movie_tags.name', Tags)
+        .InnerJoin('movie_notes', 'movie_notes.id', 'movie_tags.note_id')
+        .orderBy('movie_notes.title')
+    } else {
+        notes = await knex('movie_tags').select(['movie_notes.id', 'movie_notes.title', 'movie_notes.rating'])
+        .where('movie_notes.user_id', user_id)
+        .whereIn('movie_tags.name', Tags)
+        .InnerJoin('movie_notes', 'movie_notes.id', 'movie_tags.note_id')
+        .orderBy('movie_notes.title')
+    }
+    return notes
 }
