@@ -42,15 +42,11 @@ class MovieNotesController {
             notes = await knex('movie_notes').where({ user_id }).whereLike('title', `%${title}%`)
         }
 
-        let notesOneEntryOnly = []
-        for (let note of notes) {
-            if ( notesOneEntryOnly.filter( nt => nt.id == note.id).length ) continue
-            notesOneEntryOnly = [ ...notesOneEntryOnly, note]
-        }
+        notes = notesOneEntryOnly (notes)
 
         let userTags = await knex('movie_tags').where({ user_id })
 
-        const notesWithTags = notesOneEntryOnly.map( note => {
+        const notesWithTags = notes.map( note => {
             const note_tags = userTags.filter( tag => tag.note_id == note_id).map( tag => tag.name)
 
             return {
@@ -92,4 +88,13 @@ async function indexSearchWithTags ( user_id, tags, title) {
         .orderBy('movie_notes.title')
     }
     return notes
+}
+
+function notesOneEntryOnly (notes) {
+    let filteredNotes = []
+    for (let note of notes) {
+        if ( filteredNotes.filter( nt => nt.id == note.id).length ) continue
+        filteredNotes = [ ...filteredNotes, note]
+    }
+    return filteredNotes
 }
