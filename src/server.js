@@ -1,4 +1,4 @@
-require('express-async-error')
+require('express-async-errors')
 const express = require('express')
 
 const appError = require('./utils/appError')
@@ -12,10 +12,10 @@ app.use(routes)
 
 app.use( (error, request, response, next) => {
     if ( error instanceof appError ) {
-        return response.json( error.message)
+        return response.status(error.status).json( error.message)
     }
-    return response.json(`Server Error ${error.message}`)
+    return response.status(500).json(`Server Error ${error.message}`)
 })
 
-const PORT = 3000
+const PORT = 3333
 app.listen(PORT, () => console.log(PORT))

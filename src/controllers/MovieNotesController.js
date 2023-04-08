@@ -9,7 +9,7 @@ class MovieNotesController {
 
         inputValidation (title, description, rating)
 
-        const [ id ] = await knex('movie_notes').insert({ title, description, rating, user_id })
+        const [ id ] = await knex('movie_notes').insert({ title: title.toLowerCase(), description, rating, user_id })
 
         if ( tags ) {
             const Tags = tags.split(',').map( tag => tag.toLowerCase().trim())
@@ -39,7 +39,7 @@ class MovieNotesController {
         if ( tags ) {
             notes = await indexSearchWithTags ( user_id, tags, title)
         } else {
-            notes = await knex('movie_notes').where({ user_id }).whereLike('title', `%${title}%`)
+            notes = title ? await knex('movie_notes').where({ user_id }).whereLike('title', `%${title.toLowerCase()}%`) : await knex('movie_notes').where({ user_id })
         }
 
         notes = notesOneEntryOnly (notes)
@@ -47,7 +47,7 @@ class MovieNotesController {
         let userTags = await knex('movie_tags').where({ user_id })
 
         const notesWithTags = notes.map( note => {
-            const note_tags = userTags.filter( tag => tag.note_id == note_id).map( tag => tag.name)
+            const note_tags = userTags.filter( tag => tag.note_id == note.id).map( tag => tag.name)
 
             return {
                 ...note,
@@ -84,15 +84,15 @@ async function indexSearchWithTags ( user_id, tags, title) {
     if ( title ) {
         notes = await knex('movie_tags').select(['movie_notes.id', 'movie_notes.title', 'movie_notes.rating'])
         .where('movie_notes.user_id', user_id)
-        .whereLike('movie_notes.title', `%${title}%`)
+        .whereLike('movie_notes.title', `%${title.toLowerCase()}%`)
         .whereIn('movie_tags.name', Tags)
-        .InnerJoin('movie_notes', 'movie_notes.id', 'movie_tags.note_id')
+        .innerJoin('movie_notes', 'movie_notes.id', 'movie_tags.note_id')
         .orderBy('movie_notes.title')
     } else {
         notes = await knex('movie_tags').select(['movie_notes.id', 'movie_notes.title', 'movie_notes.rating'])
         .where('movie_notes.user_id', user_id)
         .whereIn('movie_tags.name', Tags)
-        .InnerJoin('movie_notes', 'movie_notes.id', 'movie_tags.note_id')
+        .innerJoin('movie_notes', 'movie_notes.id', 'movie_tags.note_id')
         .orderBy('movie_notes.title')
     }
     return notes
