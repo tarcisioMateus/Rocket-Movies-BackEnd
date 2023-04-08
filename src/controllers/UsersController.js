@@ -47,7 +47,7 @@ class UsersController {
         
         user.name = name ? name : user.name
 
-        await knex('users').update({ name: user.name, email: user.email, password: user.password })
+        await knex('users').update({ name: user.name, email: user.email, password: user.password, updated_at: knex.fn.now() })
 
         return response.json()
     }
