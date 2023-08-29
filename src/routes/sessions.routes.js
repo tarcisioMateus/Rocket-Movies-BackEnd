@@ -5,6 +5,6 @@ const sessionsController = new SessionsController()
 
 const sessiosRoutes = Router()
 
-sessiosRoutes.get('/', sessionsController.create)
+sessiosRoutes.post('/', sessionsController.create)
 
 module.exports = sessiosRoutes
