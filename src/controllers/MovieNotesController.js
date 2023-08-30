@@ -26,8 +26,9 @@ class MovieNotesController {
         const { id } = request.params
 
         const note = await knex('movie_notes').where({ id }).first()
+        const tags = await knex('movie_tags').where({ note_id: note.id})
 
-        return response.json(note)
+        return response.json({...note, tags})
     }
 
     async index (request, response) {
@@ -47,7 +48,7 @@ class MovieNotesController {
         let userTags = await knex('movie_tags').where({ user_id })
 
         const notesWithTags = notes.map( note => {
-            const note_tags = userTags.filter( tag => tag.note_id == note.id).map( tag => tag.name)
+            const note_tags = userTags.filter( tag => tag.note_id == note.id)
 
             return {
                 ...note,
@@ -83,14 +84,14 @@ async function indexSearchWithTags ( user_id, tags, title) {
     const Tags = tags.map( tag => tag.toLowerCase().trim())
 
     if ( title ) {
-        notes = await knex('movie_tags').select(['movie_notes.id', 'movie_notes.title', 'movie_notes.rating'])
+        notes = await knex('movie_tags').select(['movie_notes.id', 'movie_notes.title', 'movie_notes.description', 'movie_notes.rating'])
         .where('movie_notes.user_id', user_id)
         .whereLike('movie_notes.title', `%${title.toLowerCase()}%`)
         .whereIn('movie_tags.name', Tags)
         .innerJoin('movie_notes', 'movie_notes.id', 'movie_tags.note_id')
         .orderBy('movie_notes.title')
     } else {
-        notes = await knex('movie_tags').select(['movie_notes.id', 'movie_notes.title', 'movie_notes.rating'])
+        notes = await knex('movie_tags').select(['movie_notes.id', 'movie_notes.title', 'movie_notes.description', 'movie_notes.rating'])
         .where('movie_notes.user_id', user_id)
         .whereIn('movie_tags.name', Tags)
         .innerJoin('movie_notes', 'movie_notes.id', 'movie_tags.note_id')
