@@ -40,7 +40,9 @@ class MovieNotesController {
         if ( tags ) {
             notes = await indexSearchWithTags ( user_id, tags, title)
         } else {
-            notes = title ? await knex('movie_notes').where({ user_id }).whereLike('title', `%${title.toLowerCase()}%`) : await knex('movie_notes').where({ user_id })
+            notes = title 
+                ? await knex('movie_notes').where({ user_id }).whereLike('title', `%${title.toLowerCase()}%`).orderBy('movie_notes.title') 
+                : await knex('movie_notes').where({ user_id }).orderBy('movie_notes.title')
         }
 
         notes = notesOneEntryOnly (notes)
