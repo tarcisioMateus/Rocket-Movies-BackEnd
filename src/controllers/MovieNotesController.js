@@ -83,7 +83,7 @@ function inputValidation (title, description, rating) {
 
 async function indexSearchWithTags ( user_id, tags, title) {
     let notes
-    const Tags = tags.map( tag => tag.toLowerCase().trim())
+    const Tags = tags.split(',').map( tag => tag.toLowerCase().trim())
 
     if ( title ) {
         notes = await knex('movie_tags').select(['movie_notes.id', 'movie_notes.title', 'movie_notes.description', 'movie_notes.rating'])
