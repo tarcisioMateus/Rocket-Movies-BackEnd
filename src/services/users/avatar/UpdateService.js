@@ -18,9 +18,9 @@ class UpdateService {
         if (user.avatar) await this.diskStorage.deleteFile(user.avatar)
 
         user.avatar = await this.diskStorage.saveFile(filename) 
-        await this.usersRepository.update({ id, user })
+        const updated = await this.usersRepository.update({ id, user })
 
-        return filename
+        return updated
     }
 }
 

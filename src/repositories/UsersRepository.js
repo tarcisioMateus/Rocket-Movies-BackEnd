@@ -21,7 +21,7 @@ class UsersRepository {
                 name: user.name, email: user.email, 
                 avatar: user.avatar, 
                 password: user.password, updated_at: knex.fn.now() 
-            }, ['name', 'email'])
+            }, ['name', 'email', 'avatar'])
         return updated
     }
 
