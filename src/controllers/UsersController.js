@@ -1,20 +1,21 @@
-const knex = require('../database/knex')
+const UsersRepository = require('../repositories/UsersRepository')
 
-const { hash, compare } = require('bcryptjs')
-
-const appError = require('../utils/appError')
+const CreateService = require('../services/users/CreateService')
+const UpdateService = require('../services/users/UpdateService')
+const DeleteService = require('../services/users/DeleteService')
 
 class UsersController {
+    usersRepository = new UsersRepository()
+
     async create (request, response) {
         const { name, email, password } = request.body
 
-        const userWithEmail = await knex('users').where({ email }).first()
-
-        if ( userWithEmail ) throw new appError('Email already in use!')
-
-        const cryptedPassword = await hash(password, 8)
-
-        await knex('users').insert({ name, email, password: cryptedPassword})
+        const createService = new CreateService({
+            usersRepository: this.usersRepository
+        })
+        const user = await createService.execute({ 
+            name, email, password 
+        })
 
         return response.status(201).json()
     }
@@ -23,31 +24,13 @@ class UsersController {
         const { name, email, currentPassword, newPassword } = request.body
         const user_id = request.user.id
 
-        const user = await knex('users').where({ id: user_id }).first()
-
-        if ( email ) {
-            const userWithEmail = await knex('users').where({ email }).first()
-
-            if ( userWithEmail && userWithEmail.id != user.id ) throw new appError('This Email belongs to another person')
-
-            user.email = email
-        }
-
-        if ( newPassword ) {
-            if ( !currentPassword ) throw new appError('You must provid your current password to updated it')
-
-            const passwordCheck = await compare(currentPassword, user.password)
-
-            if ( passwordCheck ) {
-                user.password = await hash (newPassword, 8)
-            } else {
-                throw new appError("The given password doesn't match!" )
-            }
-        }
-        
-        user.name = name ? name : user.name
-
-        await knex('users').where({ id: user_id }).update({ name: user.name, email: user.email, password: user.password, updated_at: knex.fn.now() })
+        const updateService = new UpdateService({
+            usersRepository: this.usersRepository
+        })
+        const userUpdated = await updateService.execute({ 
+            id: user_id , name, email, 
+            currentPassword, newPassword 
+        })
 
         return response.json()
     }
@@ -55,7 +38,10 @@ class UsersController {
     async delete (request, response) {
         const user_id = request.user.id
 
-        await knex('users').where({id: user_id}).delete()
+        const deleteService = new DeleteService({
+            usersRepository: this.usersRepository
+        })
+        await deleteService.execute({ id: user_id })
 
         return response.json()
     }
