@@ -2,11 +2,15 @@ const { hash } = require('bcryptjs')
 const appError = require('../../utils/appError')
 
 class CreateService {
-    constructor({ usersRepository }) {
+    constructor({ 
+        usersRepository 
+    }) {
         this.usersRepository = usersRepository
     }
 
-    async execute({ name, email, password }) {
+    async execute({ 
+        name, email, password 
+    }) {
         const userWithEmail = await this.usersRepository.findByEmail({ email })
 
         if ( userWithEmail ) throw new appError('Email already in use!')
