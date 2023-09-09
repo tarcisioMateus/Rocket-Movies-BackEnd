@@ -1,17 +1,21 @@
-const knex = require('../database/knex')
+const MovieTagsRepository = require('../repositories/MovieTagsRepository')
+
+const IndexService = require('../services/movieTags/IndexService')
 
 class MovieTagsController {
+    movieTagsRepository = new MovieTagsRepository()
+
     async index (request, response) {
         const user_id = request.user.id
 
-        const tags = (await knex('movie_tags').where({ user_id }).orderBy('name')).map(tag => tag.name)
+        const indexService = new IndexService({
+            movieTagsRepository: this.movieTagsRepository
+        })
+        const tags = await indexService.execute({
+            user_id
+        })
 
-        let filterdTags = []
-        for (let tag of tags) {
-            if (filterdTags.includes(tag)) continue
-            filterdTags = [ ...filterdTags, tag]
-        }
-        return response.json(filterdTags)
+        return response.json( tags )
     }
 }
 
