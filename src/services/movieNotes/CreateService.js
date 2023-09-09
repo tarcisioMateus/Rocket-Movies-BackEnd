@@ -18,7 +18,6 @@ class CreateService {
         })
 
         if ( tags ) {
-            
             for (let name of tags) {
                 await this.movieTagsRepository.create({ 
                     name, user_id, note_id: note.id 
