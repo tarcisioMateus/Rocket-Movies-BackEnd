@@ -4,7 +4,7 @@ class UsersRepository {
     users = []
 
     async findByEmail({ email }) {
-        const user = users.find( user => user.email === email)
+        const user = this.users.find( user => user.email === email)
         return user
     }
 
@@ -14,30 +14,26 @@ class UsersRepository {
             avatar: null,
             name, email, password
         }
-        const lengtg = users.push(user)
-        return users[length - 1]
+        const length = this.users.push(user)
+        return this.users[length - 1]
     }
 
     async findById({ id }) {
-        const user = users.find( user => user.id === id)
+        const user = this.users.find( user => user.id === id)
         return user
     }
 
     async update({ id, user }) {
-        const index = users.findIndex( user => user.id === id )
+        const index = this.users.findIndex( user => user.id === id )
         if (index === -1 ) return []
-        users[ index ] = {
-            name: user.name, email: user.email, 
-            avatar: user.avatar, 
-            password: user.password,
-        }
-        return users[ index ]
+        this.users[ index ] = user
+        return this.users[ index ]
     }
 
     async delete({ id }) {
-        const index = users.findIndex( user => user.id === id )
+        const index = this.users.findIndex( user => user.id === id )
         if (index === -1 ) return
-        users[ index ] = {}
+        this.users[ index ] = {}
     }
 }
 
