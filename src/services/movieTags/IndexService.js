@@ -10,12 +10,12 @@ class IndexService {
     }) {
         const tags = (await this.movieTagsRepository.getUserTags({ user_id })).map(tag => tag.name)
 
-        let filterdTags = []
+        let filteredTags = []
         for (let tag of tags) {
-            if (filterdTags.includes(tag)) continue
-            filterdTags = [ ...filterdTags, tag]
+            if (filteredTags.includes(tag)) continue
+            filteredTags = [ ...filteredTags, tag]
         }
-        return filterdTags
+        return filteredTags
     }
 }
 
