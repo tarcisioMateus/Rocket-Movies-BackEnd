@@ -2,7 +2,7 @@ const CreateService = require('./CreateService')
 const UserRepository = require('../../repositories/inMemory/UserRepository')
 const appError = require('../../utils/appError')
 
-describe('UserCreateSevice', () => {
+describe('User/ CreateService', () => {
     let userRepository = null
     let createService = null
 
