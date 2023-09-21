@@ -3,7 +3,6 @@ const UpdateService = require('./UpdateService')
 
 const UsersRepository = require('../../../repositories/inMemory/UserRepository')
 const DiskStorage = require('../../../providers/DiskStorageInMemory')
-const appError = require('../../../utils/appError')
 
 describe('User/Avatar UpdateService', () => {
     let usersRepository = null
