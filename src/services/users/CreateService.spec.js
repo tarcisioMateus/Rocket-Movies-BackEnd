@@ -1,14 +1,14 @@
 const CreateService = require('./CreateService')
-const UserRepository = require('../../repositories/inMemory/UserRepository')
+const UsersRepository = require('../../repositories/inMemory/UserRepository')
 const appError = require('../../utils/appError')
 
 describe('User/ CreateService', () => {
-    let userRepository = null
+    let usersRepository = null
     let createService = null
 
     beforeEach(() => {
-        userRepository = new UserRepository()
-        createService = new CreateService(userRepository)
+        usersRepository = new UsersRepository()
+        createService = new CreateService({usersRepository})
     })
 
     it('User should be created', async () => {
@@ -35,6 +35,8 @@ describe('User/ CreateService', () => {
         }
 
         await createService.execute(user1)
-        await expect(createService.execute(user2)).rejects.toEqual( new appError('Email already in use!'))
+        await expect(createService.execute(user2)).rejects.toEqual( 
+            new appError('Email already in use!')
+        )
     })
 })

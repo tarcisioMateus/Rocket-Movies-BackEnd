@@ -21,7 +21,7 @@ class UpdateService {
         }
 
         if ( newPassword ) {
-            if ( !currentPassword ) throw new appError('You must provid your current password to updated it')
+            if ( !currentPassword ) throw new appError('You must provide your current password to updated it')
 
             const passwordMatched = await compare(currentPassword, user.password)
 
