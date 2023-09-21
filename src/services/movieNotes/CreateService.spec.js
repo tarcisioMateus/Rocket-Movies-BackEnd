@@ -69,7 +69,7 @@ describe('User/ CreateService', () => {
         )
     })
 
-    it('Should NOT create a note where the rating is out of range', async () => {
+    it('new not should be created', async () => {
         const note1 = {
             user_id: 1, title: 'undefined', description: 'undefined', rating: 2, tags: undefined
         }
