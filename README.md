@@ -6,6 +6,8 @@ The database was build with KNEX.
 
 I also created a couple of functions to help separate responsabilite that I refered as (SR_func) on the git commits.
 
+## Client to connect with this application
+https://github.com/tarcisioMateus/Rocket-Movies
 
 ## Tech Stack
 **Server:** Node, Express, Knex, SQLite3
