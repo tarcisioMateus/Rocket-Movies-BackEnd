@@ -5,13 +5,12 @@ const UpdateService = require('../services/users/UpdateService')
 const DeleteService = require('../services/users/DeleteService')
 
 class UsersController {
-    usersRepository = new UsersRepository()
 
     async create (request, response) {
         const { name, email, password } = request.body
 
         const createService = new CreateService({
-            usersRepository: this.usersRepository
+            usersRepository: new UsersRepository()
         })
         const user = await createService.execute({ 
             name, email, password 
@@ -25,7 +24,7 @@ class UsersController {
         const user_id = request.user.id
 
         const updateService = new UpdateService({
-            usersRepository: this.usersRepository
+            usersRepository: new UsersRepository()
         })
         const userUpdated = await updateService.execute({ 
             id: user_id , name, email, 
@@ -39,7 +38,7 @@ class UsersController {
         const user_id = request.user.id
 
         const deleteService = new DeleteService({
-            usersRepository: this.usersRepository
+            usersRepository: new UsersRepository()
         })
         await deleteService.execute({ id: user_id })
 

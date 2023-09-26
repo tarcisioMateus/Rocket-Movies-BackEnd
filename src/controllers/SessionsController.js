@@ -3,13 +3,12 @@ const UsersRepository = require('../repositories/UsersRepository')
 const CreateService = require('../services/sessions/CreateService')
 
 class SessionsController {
-  usersRepository = new UsersRepository()
 
   async create(request, response) {
     const { email, password } = request.body
 
     const createService = new CreateService({
-      usersRepository: this.usersRepository
+      usersRepository: new UsersRepository()
     })
     const { token, user } = await createService.execute({ 
       email, password 

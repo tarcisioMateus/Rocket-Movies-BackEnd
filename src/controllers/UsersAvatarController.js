@@ -3,17 +3,15 @@ const DiskStorage = require('../providers/DiskStorage')
 
 const UpdateService = require('../services/users/avatar/UpdateService')
 
-class UsersAvatarController {
-  usersRepository = new UsersRepository()
-  diskStorage = new DiskStorage()
+class UsersAvatarController { 
 
   async update(request, response) {
     const user_id = request.user.id
     const { filename } = request.file
 
     const updateService = new UpdateService({
-      usersRepository: this.usersRepository, 
-      diskStorage: this.diskStorage
+      usersRepository: new UsersRepository(), 
+      diskStorage: new DiskStorage()
     })
     const updated = await updateService.execute({ 
       id: user_id, filename

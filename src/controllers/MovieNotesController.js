@@ -7,16 +7,14 @@ const ShowService = require('../services/movieNotes/ShowService')
 const DeleteService = require('../services/movieNotes/DeleteService')
 
 class MovieNotesController {
-    movieNotesRepository = new MovieNotesRepository()
-    movieTagsRepository = new MovieTagsRepository()
-
 
     async create (request, response) {
         const { title, description, rating, tags } = request.body
         const user_id = request.user.id
 
         const createService = new CreateService({
-            movieNotesRepository: this.movieNotesRepository, movieTagsRepository: this.movieTagsRepository
+            movieNotesRepository: new MovieNotesRepository(), 
+            movieTagsRepository: new MovieTagsRepository()
         })
         await createService.execute({ 
             user_id, title: title.toLowerCase(), 
@@ -30,7 +28,8 @@ class MovieNotesController {
         const { id } = request.params
 
         const showService = new ShowService({
-            movieNotesRepository: this.movieNotesRepository, movieTagsRepository: this.movieTagsRepository
+            movieNotesRepository: new MovieNotesRepository(), 
+            movieTagsRepository: new MovieTagsRepository()
         })
         const data = await showService.execute({ 
             id 
@@ -44,12 +43,13 @@ class MovieNotesController {
         const user_id = request.user.id
 
         const indexService = new IndexService({
-            movieNotesRepository: this.movieNotesRepository, movieTagsRepository: this.movieTagsRepository
+            movieNotesRepository: new MovieNotesRepository(), 
+            movieTagsRepository: new MovieTagsRepository()
         })
         const notesWithTags = await indexService.execute({ 
             user_id, 
-            title: title.toLowerCase(), 
-            tags: tags.split(',').map( tag => tag.toLowerCase().trim())
+            title: title ? title.toLowerCase() : title, 
+            tags: tags ? tags.split(',').map( tag => tag.toLowerCase().trim()) : tags
         })
 
         return response.json(notesWithTags)
@@ -59,7 +59,7 @@ class MovieNotesController {
         const { id } = request.params
 
         const deleteService = new DeleteService({
-            movieNotesRepository: this.movieNotesRepository
+            movieNotesRepository: new MovieNotesRepository()
         })
         await deleteService.execute({
             id
