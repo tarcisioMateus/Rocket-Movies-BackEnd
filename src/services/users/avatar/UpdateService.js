@@ -20,7 +20,7 @@ class UpdateService {
         user.avatar = await this.diskStorage.saveFile(filename) 
         const updated = await this.usersRepository.update({ id, user })
 
-        return updated
+        return user
     }
 }
 

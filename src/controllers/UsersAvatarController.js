@@ -17,7 +17,7 @@ class UsersAvatarController {
       id: user_id, filename
     })
 
-    return response.json( updated )
+    return response.json( updated.avatar )
   }
 }
 
